@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 
-function SpinWheel() {
+function SpinWheel({ walletAddress, wheelBlockchain }) {
   const [name, setName] = useState("circle");
 
   const startRotation = () => {
     setName("circle start-rotate");
     setTimeout(() => {
+      earnToken();
       setName("circle start-rotate stop-rotate");
     }, 1900)
   }
 
+  const earnToken = async () => {
+    const data = await wheelBlockchain.methods
+      .sendToken()
+      .send({ from: walletAddress });
+
+    console.log(data);
+  }
+
   return (
-    <div>
+    <div className="wheel">
       <div className="arrow"></div>
       <ul className={name}>
         <li>
@@ -75,9 +84,9 @@ function SpinWheel() {
           </div>
         </li>
       </ul>
-      <button className="spin-button" onClick={startRotation}>
+      {wheelBlockchain && <button className="spin-button" onClick={startRotation}>
         SPIN
-      </button>
+      </button>}
     </div>
   )
 }
