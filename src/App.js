@@ -11,6 +11,7 @@ function App() {
   const [wheelBlockchain, setWheelBlockchain] = useState(null);
   const [tokenBlockchain, setTokenBlockchain] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(0);
+  const [poolPrize, setPoolPrize] = useState(0);
 
   const connetToWallet = async () => {
     if (window.ethereum) {
@@ -46,8 +47,12 @@ function App() {
         const amount = await tokenContract.methods
           .balanceOf(accounts[0])
           .call();
-        
         setTokenBalance(amount);
+
+        const pool = await wheelContract.methods
+          .prizePool()
+          .call();
+        setPoolPrize(pool);
     } else {
         window.alert('Contract is not deployed to detected network')
     }
@@ -56,7 +61,8 @@ function App() {
   return (
     <div className="App">
       <p>{walletAddress}</p>
-      <p>{tokenBalance}</p>
+      <p>GWT {tokenBalance / 10 ** 18}</p>
+      <p>Pool Prize {poolPrize / 10 ** 18}</p>
       <button onClick={connetToWallet}>Connect</button>
       <SpinWheel
         walletAddress={walletAddress}

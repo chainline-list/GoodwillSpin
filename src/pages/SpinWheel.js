@@ -6,9 +6,15 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
   const startRotation = () => {
     setName("circle start-rotate");
     setTimeout(() => {
-      earnToken();
       setName("circle start-rotate stop-rotate");
     }, 1900)
+  }
+
+  const buyToken = async () => {
+    const data = await wheelBlockchain.methods
+      .buyTokens()
+      .send({ from: walletAddress, value: window.web3.utils.toWei("1", 'Ether')});
+    console.log(data);
   }
 
   const earnToken = async () => {
@@ -17,6 +23,7 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
       .send({ from: walletAddress });
 
     console.log(data);
+    startRotation();
   }
 
   return (
@@ -84,7 +91,8 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
           </div>
         </li>
       </ul>
-      {wheelBlockchain && <button className="spin-button" onClick={startRotation}>
+      <button onClick={buyToken}>Buy Tokens</button>
+      {wheelBlockchain && <button className="spin-button" onClick={earnToken}>
         SPIN
       </button>}
     </div>

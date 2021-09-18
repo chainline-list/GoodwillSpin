@@ -21,8 +21,14 @@ contract Token is ERC20 {
     }
 
     function mint(address account, uint256 amount) public {
-        require(msg.sender == minter, "You cannot mint a token");
+        require(msg.sender == minter, "You cannot mint tokens");
 
         _mint(account, amount);
+    }
+
+    function burn(address account, uint256 amount) public {
+        require(msg.sender == minter, "You cannot burn tokens");
+
+        _burn(account, amount);
     }
 }
