@@ -25,7 +25,6 @@ contract Wheel {
 
     // Send ticket token
     function buyTokens() payable public  {
-        msg.sender.transfer(msg.value);
         prizePool += msg.value;
         token.mint(msg.sender, msg.value);
 
@@ -39,5 +38,9 @@ contract Wheel {
         prizePool -= amount;
 
         emit WonWheel(msg.sender, amount);
+    }
+
+    function getPrizePool() public view returns (uint) {
+        return address(this).balance;
     }
 }
