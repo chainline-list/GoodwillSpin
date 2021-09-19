@@ -50,7 +50,7 @@ function App() {
         setTokenBalance(amount);
 
         const pool = await wheelContract.methods
-          .prizePool()
+          .getPrizePool()
           .call();
         setPoolPrize(pool);
     } else {

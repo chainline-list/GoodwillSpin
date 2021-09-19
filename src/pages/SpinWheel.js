@@ -12,14 +12,14 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
 
   const buyToken = async () => {
     const data = await wheelBlockchain.methods
-      .buyTokens()
-      .send({ from: walletAddress, value: window.web3.utils.toWei("1", 'Ether')});
+      .buyTicketTokens()
+      .send({ from: walletAddress, value: window.web3.utils.toWei("2", 'Ether')});
     console.log(data);
   }
 
   const earnToken = async () => {
     const data = await wheelBlockchain.methods
-      .sendToken()
+      .useTicketToken()
       .send({ from: walletAddress });
 
     console.log(data);

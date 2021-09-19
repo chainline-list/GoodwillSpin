@@ -24,23 +24,31 @@ contract Wheel {
     }
 
     // Send ticket token
-    function buyTokens() payable public  {
+    function buyTicketTokens() payable public  {
         prizePool += msg.value;
         token.mint(msg.sender, msg.value);
 
         emit TokenSale(msg.sender, msg.value);
     }
 
-    // Pay 1 Ticket token to spin the wheel
-    function sendToken() public {
+    // Pay 1 Ticket token to spin the wheel and earn 50% of the prize pool
+    function useTicketToken() public {
         token.burn(msg.sender, 10 ** 18);
+        
         uint amount = prizePool / 2;
+        msg.sender.transfer(amount);
         prizePool -= amount;
 
         emit WonWheel(msg.sender, amount);
     }
 
+    // Get the prize pool
     function getPrizePool() public view returns (uint) {
         return address(this).balance;
+    }
+
+    // NOTE: For testing only, withdraw all the funds from the contract
+    function withdraw() public {
+        msg.sender.transfer(address(this).balance);
     }
 }
