@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { Layout } from 'antd';
 import Web3 from 'web3';
 
+import './App.css';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import SpinWheel from './pages/SpinWheel';
 import TokenBlockchain from './abis/Token.json';
 import WheelBlockchain from './abis/Wheel.json';
-import './App.css';
 
 function App() {
   const [walletAddress, setWalletAddress] = useState('');
@@ -59,15 +62,31 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <p>{walletAddress}</p>
-      <p>GWT {tokenBalance / 10 ** 18}</p>
-      <p>Pool Prize {poolPrize / 10 ** 18}</p>
-      <button onClick={connetToWallet}>Connect</button>
-      <SpinWheel
-        walletAddress={walletAddress}
-        wheelBlockchain={wheelBlockchain}/>
-    </div>
+    <Layout className="App">
+      <Navbar connetToWallet={connetToWallet} walletAddress={walletAddress} />
+      <Layout>
+        <Layout.Sider width={180} className="site-layout-background"> 
+          <Sidebar />
+        </Layout.Sider>
+        <Layout style={{ padding: '0 24px 24px', height: '92vh' }}>
+          <Layout.Content
+            className="site-layout-background"
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+            }}
+          >
+            <p>GWT {tokenBalance / 10 ** 18}</p>
+            <p>Pool Prize {poolPrize / 10 ** 18}</p>
+            
+            <SpinWheel
+              walletAddress={walletAddress}
+              wheelBlockchain={wheelBlockchain}/>
+          </Layout.Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 }
 
