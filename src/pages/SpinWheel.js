@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 function SpinWheel({ walletAddress, wheelBlockchain }) {
   const [name, setName] = useState("circle");
 
-  const startRotation = () => {
+  const startRotation = (randomNumber) => {
     setName("circle start-rotate");
     setTimeout(() => {
       setName("circle start-rotate stop-rotate");
-    }, 1900)
+    }, (1000 + (10 * +randomNumber)))
   }
 
   const buyToken = async () => {
@@ -23,7 +23,8 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
       .send({ from: walletAddress });
 
     console.log(data);
-    startRotation();
+    console.log(data.events.WonWheel.returnValues.randomNumber)
+    startRotation(data.events.WonWheel.returnValues.randomNumber);
   }
 
   return (
@@ -68,26 +69,6 @@ function SpinWheel({ walletAddress, wheelBlockchain }) {
         <li>
           <div className="text">
             8
-          </div>
-        </li>
-        <li>
-          <div className="text">
-            9
-          </div>
-        </li>
-        <li>
-          <div className="text">
-            10
-          </div>
-        </li>
-        <li>
-          <div className="text">
-            11
-          </div>
-        </li>
-        <li>
-          <div className="text">
-            12
           </div>
         </li>
       </ul>
