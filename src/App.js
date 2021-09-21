@@ -68,7 +68,7 @@ function App() {
         <Layout.Sider width={180} className="site-layout-background"> 
           <Sidebar />
         </Layout.Sider>
-        <Layout style={{ padding: '0 24px 24px', height: '92vh' }}>
+        <Layout style={{ padding: '0 24px 24px', minHeight: '92vh' }}>
           <Layout.Content
             className="site-layout-background"
             style={{

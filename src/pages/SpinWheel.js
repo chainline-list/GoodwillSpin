@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { Row, Col, Typography, Button, Divider, List } from 'antd';
 
+import ResultModal from '../components/ResultModal';
+
 function SpinWheel({ walletAddress, wheelBlockchain, tokenBalance }) {
   const [name, setName] = useState("circle");
   const [wonOne, setWonOne] = useState(0);
   const [usedTickets, setUsedTickets] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [result, setResult] = useState('');
 
   const startRotation = (randomNumber) => {
     setName("circle start-rotate");
     setTimeout(() => {
       setName("circle start-rotate stop-rotate");
+      setIsModalVisible(true);
     }, (1000 + (10 * +randomNumber)))
   }
 
@@ -29,6 +34,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBalance }) {
     console.log(data.events.WonWheel.returnValues.randomNumber);
     setUsedTickets(usedTickets + 1);
     setWonOne(wonOne + +data.events.WonWheel.returnValues.amount);
+    setResult(data.events.WonWheel.returnValues.result);
     startRotation(data.events.WonWheel.returnValues.randomNumber);
   }
 
@@ -39,7 +45,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBalance }) {
       </Typography.Title>
       <p style={{ marginBottom: '2.5rem'}}>For every One Token donated to charities, you receive one ticket to spin the wheel of goodwill.</p>
       <Row gutter={16}>
-        <Col className="gutter-row" span={12}>
+        <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
           <div className="wheel">
             <div className="arrow"></div>
             <ul className={name}>
@@ -70,12 +76,12 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBalance }) {
             </ul>
           </div>
         </Col>
-        <Col className="gutter-row" span={12}>
+        <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
           <Button type="secondary" onClick={buyToken}>
             Buy Tokens
           </Button>
           <Typography.Title level={2}>
-            Your Spin Tickets {tokenBalance / 10 ** 18}
+            Your Spin Tickets: {tokenBalance / 10 ** 18}
           </Typography.Title >
           {wheelBlockchain && <Button onClick={earnToken} type="primary" size="large">
             SPIN
@@ -99,6 +105,11 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBalance }) {
           </List>
         </Col>
       </Row>
+
+      <ResultModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        result={result} />
     </div>
   )
 }
