@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout } from 'antd';
+import { Layout, Card, Statistic } from 'antd';
 import Web3 from 'web3';
 
 import './App.css';
@@ -77,12 +77,13 @@ function App() {
               minHeight: 280,
             }}
           >
-            <p>GWT {tokenBalance / 10 ** 18}</p>
-            <p>Pool Prize {poolPrize / 10 ** 18}</p>
-            
+            <Card>
+              <Statistic title="Total Pool Prize" value={`${poolPrize / 10 ** 18} One`} />
+            </Card>
             <SpinWheel
               walletAddress={walletAddress}
-              wheelBlockchain={wheelBlockchain}/>
+              wheelBlockchain={wheelBlockchain}
+              tokenBalance={tokenBalance} />
           </Layout.Content>
         </Layout>
       </Layout>

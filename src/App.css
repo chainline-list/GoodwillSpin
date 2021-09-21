@@ -112,20 +112,6 @@
   z-index: 1;
 }
 
-.spin-button {
-  position: absolute;
-  left: 40%;
-  width: 120px;
-  height: 40px;
-  background-color: #4b89ac;
-  border-radius: 30px;
-  margin-top: 20px;
-  cursor: pointer;
-  outline: none;
-  color: white;
-  font-size: 18px;
-}
-
 .start-rotate {
   animation: start-rotate 1s linear infinite;
 }
