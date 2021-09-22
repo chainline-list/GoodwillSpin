@@ -5,7 +5,9 @@ import "./Token.sol";
 
 contract Wheel {
     Token private token;
+    uint public totalDonation = 0;
     uint public prizePool = 0;
+    uint public prizePoolWon = 0;
     address payable _owner;
 
     event TokenSale (
@@ -29,6 +31,7 @@ contract Wheel {
     // Send ticket token
     function buyTicketTokens() payable public  {
         prizePool += msg.value;
+        totalDonation += msg.value;
         token.mint(msg.sender, msg.value);
 
         emit TokenSale(msg.sender, msg.value);
@@ -47,6 +50,7 @@ contract Wheel {
             amount = (prizePool * 50) / 100;
             msg.sender.transfer(amount);
             prizePool -= amount;
+            prizePoolWon += amount;
             wheelNumber = 8;
         }
         else if(randomNumber > 80){
@@ -54,6 +58,7 @@ contract Wheel {
             amount = (prizePool * 25) / 100;
             msg.sender.transfer(amount);
             prizePool -= amount;
+            prizePoolWon += amount;
             wheelNumber = 7;
         }
         else if(randomNumber > 70){
@@ -73,6 +78,7 @@ contract Wheel {
             amount = (prizePool * 15) / 100;
             msg.sender.transfer(amount);
             prizePool -= amount;
+            prizePoolWon += amount;
             wheelNumber = 4;
         }
         else if(randomNumber > 50){
@@ -80,6 +86,7 @@ contract Wheel {
             amount = (prizePool * 10) / 100;
             msg.sender.transfer(amount);
             prizePool -= amount;
+            prizePoolWon += amount;
             wheelNumber = 3;
         }
         else if(randomNumber > 30){
@@ -87,6 +94,7 @@ contract Wheel {
             amount = (prizePool * 5) / 100;
             msg.sender.transfer(amount);
             prizePool -= amount;
+            prizePoolWon += amount;
             wheelNumber = 2;
         }
         else{

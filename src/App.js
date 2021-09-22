@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Card, Statistic } from 'antd';
+import { Layout } from 'antd';
 import Web3 from 'web3';
 
 import './App.css';
@@ -13,8 +13,6 @@ function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [wheelBlockchain, setWheelBlockchain] = useState(null);
   const [tokenBlockchain, setTokenBlockchain] = useState(null);
-  const [tokenBalance, setTokenBalance] = useState(0);
-  const [poolPrize, setPoolPrize] = useState(0);
 
   const connetToWallet = async () => {
     if (window.ethereum) {
@@ -46,16 +44,6 @@ function App() {
 
         const tokenContract = new web3.eth.Contract(TokenBlockchain.abi, TokenBlockchain.networks[networkId].address);
         setTokenBlockchain(tokenContract);
-
-        const amount = await tokenContract.methods
-          .balanceOf(accounts[0])
-          .call();
-        setTokenBalance(amount);
-
-        const pool = await wheelContract.methods
-          .getPrizePool()
-          .call();
-        setPoolPrize(pool);
     } else {
         window.alert('Contract is not deployed to detected network')
     }
@@ -77,13 +65,10 @@ function App() {
               minHeight: 280,
             }}
           >
-            <Card>
-              <Statistic title="Total Pool Prize" value={`${poolPrize / 10 ** 18} One`} />
-            </Card>
             <SpinWheel
               walletAddress={walletAddress}
               wheelBlockchain={wheelBlockchain}
-              tokenBalance={tokenBalance} />
+              tokenBlockchain={tokenBlockchain}/>
           </Layout.Content>
         </Layout>
       </Layout>
