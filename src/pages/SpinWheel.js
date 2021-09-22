@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Typography, Button, Divider, List } from 'antd';
 
 import PrizePoolCard from '../components/PrizePoolCard';
+import DonationFormCard from '../components/DonationFormCard';
 import ResultModal from '../components/ResultModal';
 
 function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
   const [name, setName] = useState("circle");
+  const [oneBalance, setOneBalance] = useState(0);
   const [tokenBalance, setTokenBalance] = useState(0);
   const [donationTotal, setDonationTotal] = useState(0);
   const [poolPrize, setPoolPrize] = useState(0);
@@ -29,10 +31,13 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         .prizePoolWon()
         .call();
         setAwardedWon(award);
+      
+      const balance = await window.web3.eth.getBalance(walletAddress);
+      setOneBalance(balance);
     }
 
     if(wheelBlockchain) getPoolPrizeInfo();
-  }, [wheelBlockchain])
+  }, [wheelBlockchain, walletAddress])
 
   useEffect(() => {
     const getTicketToken = async () => {
@@ -43,7 +48,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
     }
 
     if(tokenBlockchain) getTicketToken();
-  }, [tokenBlockchain])
+  }, [tokenBlockchain, walletAddress])
 
   const startRotation = (randomNumber) => {
     setName("circle start-rotate");
@@ -67,14 +72,15 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         .balanceOf(walletAddress)
         .call();
       setTokenBalance(amount);
-
+      const balance = await window.web3.eth.getBalance(walletAddress);
+      setOneBalance(balance);
     }, (1000 + (10 * +randomNumber)))
   }
 
-  const buyToken = async () => {
+  const buyToken = async (userAmount) => {
     const data = await wheelBlockchain.methods
       .buyTicketTokens()
-      .send({ from: walletAddress, value: window.web3.utils.toWei("2", 'Ether')});
+      .send({ from: walletAddress, value: window.web3.utils.toWei(userAmount, 'Ether')});
     console.log(data);
     const donation = await wheelBlockchain.methods
       .totalDonation()
@@ -88,6 +94,8 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
       .balanceOf(walletAddress)
       .call();
     setTokenBalance(amount);
+    const balance = await window.web3.eth.getBalance(walletAddress);
+    setOneBalance(balance);
   }
 
   const earnToken = async () => {
@@ -109,10 +117,13 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         donationTotal={donationTotal}
         poolPrize={poolPrize}
         awardedWon={awardedWon} />
-      <Typography.Title style={{ marginTop: '1rem', marginBottom: '.5rem'}}>
+      <DonationFormCard
+        buyToken={buyToken}
+        oneBalance={oneBalance} />
+
+      <Typography.Title style={{ marginTop: '1rem', marginBottom: '2rem'}}>
         Wheel of Goodwill
       </Typography.Title>
-      <p style={{ marginBottom: '2.5rem'}}>For every One Token donated to charities, you receive one ticket to spin the wheel of goodwill.</p>
       <Row gutter={16}>
         <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
           <div className="wheel">
@@ -146,9 +157,6 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
           </div>
         </Col>
         <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
-          <Button type="secondary" onClick={buyToken}>
-            Buy Tokens
-          </Button>
           <Typography.Title level={2}>
             Your Spin Tickets: {tokenBalance / 10 ** 18}
           </Typography.Title >
@@ -168,7 +176,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
               </List.Item>
               <List.Item>
                 <List.Item.Meta
-                  title={`Spin Tickes : ${usedTickets}`}
+                  title={`Spin Tickets : ${usedTickets}`}
                 />
               </List.Item>
           </List>
