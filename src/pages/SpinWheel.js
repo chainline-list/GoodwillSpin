@@ -3,10 +3,11 @@ import { Row, Col, Typography, Button, Divider, List } from 'antd';
 
 import PrizePoolCard from '../components/PrizePoolCard';
 import DonationFormCard from '../components/DonationFormCard';
+import Wheel from '../components/Wheel';
 import ResultModal from '../components/ResultModal';
 
 function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
-  const [name, setName] = useState("circle");
+  const [wheelclass, setWheelclass] = useState("box");
   const [oneBalance, setOneBalance] = useState(0);
   const [tokenBalance, setTokenBalance] = useState(0);
   const [donationTotal, setDonationTotal] = useState(0);
@@ -51,9 +52,9 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
   }, [tokenBlockchain, walletAddress])
 
   const startRotation = (randomNumber) => {
-    setName("circle start-rotate");
+    setWheelclass("box start-rotate");
     setTimeout(async () => {
-      setName("circle start-rotate stop-rotate");
+      setWheelclass("box start-rotate stop-rotate");
       setIsModalVisible(true);
 
       const donation = await wheelBlockchain.methods
@@ -126,44 +127,16 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
       </Typography.Title>
       <Row gutter={16}>
         <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
-          <div className="wheel">
-            <div className="arrow"></div>
-            <ul className={name}>
-              <li>
-                <div className="text">1</div>
-              </li>
-              <li>
-                <div className="text">2</div>
-              </li>
-              <li>
-                <div className="text">3</div>
-              </li>
-              <li>
-                <div className="text">4</div>
-              </li>
-              <li>
-                <div className="text">5</div>
-              </li>
-              <li>
-                <div className="text">6</div>
-              </li>
-              <li>
-                <div className="text">7</div>
-              </li>
-              <li>
-                <div className="text">8</div>
-              </li>
-            </ul>
-          </div>
+          <Wheel
+            wheelclass={wheelclass}
+            earnToken={earnToken}
+            wheelBlockchain={wheelBlockchain} />
         </Col>
         <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
           <Typography.Title level={2}>
             Your Spin Tickets: {tokenBalance / 10 ** 18}
           </Typography.Title >
-          {wheelBlockchain && <Button onClick={earnToken} type="primary" size="large">
-            SPIN
-          </Button>}
-
+          
           <Divider orientation="left">Your Winnings</Divider>
           <List
             style={{ backgroundColor: 'white'}}
