@@ -51,7 +51,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
     if(tokenBlockchain) getTicketToken();
   }, [tokenBlockchain, walletAddress])
 
-  const startRotation = (randomNumber) => {
+  const startRotation = (wheelNumber) => {
     setWheelclass("box start-rotate");
     setTimeout(async () => {
       setWheelclass("box start-rotate stop-rotate");
@@ -75,7 +75,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
       setTokenBalance(amount);
       const balance = await window.web3.eth.getBalance(walletAddress);
       setOneBalance(balance);
-    }, (1000 + (10 * +randomNumber)))
+    }, (1000 + (125 * +wheelNumber)))
   }
 
   const buyToken = async (userAmount) => {
@@ -109,7 +109,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
     setUsedTickets(usedTickets + 1);
     setWonOne(wonOne + +data.events.WonWheel.returnValues.amount);
     setResult(data.events.WonWheel.returnValues.result);
-    startRotation(data.events.WonWheel.returnValues.randomNumber);
+    startRotation(data.events.WonWheel.returnValues.wheelNumber);
   }
 
   return (
