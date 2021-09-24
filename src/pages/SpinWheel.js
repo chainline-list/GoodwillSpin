@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Typography, Button, Divider, List } from 'antd';
+import { Row, Col, Typography, Divider, List } from 'antd';
 
 import PrizePoolCard from '../components/PrizePoolCard';
 import DonationFormCard from '../components/DonationFormCard';
 import Wheel from '../components/Wheel';
+import PrizeInformationCard from '../components/PrizeInformationCard';
 import ResultModal from '../components/ResultModal';
 
 function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
@@ -153,6 +154,9 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
                 />
               </List.Item>
           </List>
+
+          <Divider orientation="left">Prize Information</Divider>
+          <PrizeInformationCard />
         </Col>
       </Row>
 
