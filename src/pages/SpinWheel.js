@@ -7,7 +7,7 @@ import Wheel from '../components/Wheel';
 import PrizeInformationCard from '../components/PrizeInformationCard';
 import ResultModal from '../components/ResultModal';
 
-function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
+function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn, magicHarmony }) {
   const [wheelclass, setWheelclass] = useState("box");
   const [oneBalance, setOneBalance] = useState(0);
   const [tokenBalance, setTokenBalance] = useState(0);
@@ -34,8 +34,10 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         .call();
         setAwardedWon(award);
       
-      const balance = await window.web3.eth.getBalance(walletAddress);
-      setOneBalance(balance);
+      if(window.web3.eth){
+        const balance = await window.web3.eth.getBalance(walletAddress);
+        setOneBalance(balance);
+      }
     }
 
     if(wheelBlockchain) getPoolPrizeInfo();
@@ -74,20 +76,40 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         .balanceOf(walletAddress)
         .call();
       setTokenBalance(amount);
-      const balance = await window.web3.eth.getBalance(walletAddress);
-      setOneBalance(balance);
+
+      if(window.web3.eth){
+        const balance = await window.web3.eth.getBalance(walletAddress);
+        setOneBalance(balance);
+      }
     }, (1000 + (125 * +wheelNumber)))
   }
 
   const buyToken = async (userAmount) => {
-    const data = await wheelBlockchain.methods
-      .buyTicketTokens()
-      .send({ from: walletAddress, value: window.web3.utils.toWei(userAmount, 'Ether')});
-    console.log(data);
+    if(isLoggedIn){
+      const tx = await wheelBlockchain.methods.buyTicketTokens();
+      console.log(tx);
+
+      let { txPayload } = tx.transaction;
+      txPayload.from = walletAddress;
+      txPayload.value = (userAmount * 10 ** 18).toString();
+      txPayload.gasLimit = '210000';
+      txPayload.gasPrice = '1000000000';
+
+      console.log(txPayload);
+      const txn = await magicHarmony.harmony.sendTransaction(txPayload);
+      console.log('call contract', txn);
+    }
+    else{
+      const data = await wheelBlockchain.methods
+        .buyTicketTokens()
+        .send({ from: walletAddress, value: window.web3.utils.toWei(userAmount, 'Ether')});
+      console.log(data);
+    }
+    
     const donation = await wheelBlockchain.methods
       .totalDonation()
       .call();
-      setDonationTotal(donation);
+    setDonationTotal(donation);
     const prize = await wheelBlockchain.methods
       .prizePool()
       .call();
@@ -96,21 +118,42 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
       .balanceOf(walletAddress)
       .call();
     setTokenBalance(amount);
-    const balance = await window.web3.eth.getBalance(walletAddress);
-    setOneBalance(balance);
+
+    if(window.web3.eth){
+      const balance = await window.web3.eth.getBalance(walletAddress);
+      setOneBalance(balance);
+    }
   }
 
   const earnToken = async () => {
-    const data = await wheelBlockchain.methods
-      .useTicketToken()
-      .send({ from: walletAddress });
+    if(isLoggedIn){
+      const tx = await wheelBlockchain.methods.useTicketToken();
+      console.log(tx);
 
-    console.log(data);
-    console.log(data.events.WonWheel.returnValues.randomNumber);
-    setUsedTickets(usedTickets + 1);
-    setWonOne(wonOne + +data.events.WonWheel.returnValues.amount);
-    setResult(data.events.WonWheel.returnValues.result);
-    startRotation(data.events.WonWheel.returnValues.wheelNumber);
+      let { txPayload } = tx.transaction;
+      txPayload.from = walletAddress;
+      txPayload.gasLimit = '210000';
+      txPayload.gasPrice = '1000000000';
+
+      console.log(txPayload);
+      const txn = await magicHarmony.harmony.sendTransaction(txPayload);
+      console.log('call contract', txn);
+      setUsedTickets(usedTickets + 1);
+      startRotation(0);
+    }
+    else{
+      const data = await wheelBlockchain.methods
+        .useTicketToken()
+        .send({ from: walletAddress });
+
+      console.log(data);
+      console.log(data.events.WonWheel.returnValues.randomNumber);
+      setUsedTickets(usedTickets + 1);
+      setWonOne(wonOne + +data.events.WonWheel.returnValues.amount);
+      setResult(data.events.WonWheel.returnValues.result);
+      startRotation(data.events.WonWheel.returnValues.wheelNumber);
+    }
+    
   }
 
   return (
