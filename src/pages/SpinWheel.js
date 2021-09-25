@@ -123,17 +123,17 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain }) {
         buyToken={buyToken}
         oneBalance={oneBalance} />
 
-      <Typography.Title style={{ marginTop: '1rem', marginBottom: '2rem'}}>
+      <Typography.Title style={{ marginTop: '1rem', textAlign: 'center'}}>
         Wheel of Goodwill
       </Typography.Title>
       <Row gutter={16}>
-        <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
+        <Col className="gutter-row" xs={{ span: 24 }} sm={{ span: 12 }}>
           <Wheel
             wheelclass={wheelclass}
             earnToken={earnToken}
             wheelBlockchain={wheelBlockchain} />
         </Col>
-        <Col className="gutter-row" sm={{ span: 24 }} md={{ span: 12 }}>
+        <Col className="gutter-row" xs={{ span: 24 }} sm={{ span: 12 }}>
           <Typography.Title level={2}>
             Your Spin Tickets: {tokenBalance / 10 ** 18}
           </Typography.Title >

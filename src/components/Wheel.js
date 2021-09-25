@@ -1,9 +1,14 @@
 import React from 'react';
-import {
-  DeleteOutlined,
-  CopyOutlined,
-  DollarCircleOutlined
-} from '@ant-design/icons'
+import { Button } from 'antd';
+
+import icon1 from '../assets/777Jackpot_50%.png'
+import icon2 from '../assets/bigWin_25%.png';
+import icon3 from '../assets/moneyBag_15%.png';
+import icon4 from '../assets/money_10%.png';
+import icon5 from '../assets/coin_5%.png';
+import icon6 from '../assets/wheel 10 tickets.png';
+import icon7 from '../assets/spin_ticket_5.png';
+import icon8 from '../assets/better_luck.png';
 
 function Wheel({ wheelclass, earnToken, wheelBlockchain }) {
   return (
@@ -14,35 +19,38 @@ function Wheel({ wheelclass, earnToken, wheelBlockchain }) {
         <div className={wheelclass}>
           <div className="box1">
             <span className="span1">
-              <DollarCircleOutlined className="icon"/><b>25% Prize</b>
+              <img src={icon2} className="icon" alt="won25%" />
             </span>
             <span className="span2">
-              <DollarCircleOutlined className="icon"/><b>10% Prize</b>
+              <img src={icon4} className="icon" alt="won10%" />
             </span>
             <span className="span3">
-              <CopyOutlined className="icon" /><b>5 Tickets</b>
+              <img src={icon7} className="icon" alt="free5" />
             </span>
             <span className="span4">
-              <DeleteOutlined className="icon" /><b>Nothing</b>
+              <img src={icon8} className="icon" alt="nothing" />
             </span>
           </div>
           <div className="box2">
             <span className="span1">
-              <DollarCircleOutlined className="icon"/><b>15% Prize</b>
+              <img src={icon3} className="icon" alt="won15%" />
             </span>
             <span className="span2">
-              <DollarCircleOutlined className="icon"/><b>50% Prize</b>
+              <img src={icon1} className="icon" alt="won50%" />
             </span>
             <span className="span3">
-              <DollarCircleOutlined className="icon"/><b>5% Prize</b>
+              <img src={icon5} className="icon" alt="won5%" />
             </span>
             <span className="span4">
-              <CopyOutlined className="icon" /><b>10 Tickets</b>
+              <img src={icon6} className="icon" alt="free10" />
             </span>
           </div>
         </div>
+        <button className="spin"></button>
         { wheelBlockchain && 
-          <button className="spin" onClick={earnToken}>SPIN</button>
+          <Button className="btn-spin" onClick={earnToken} type="primary" size="large">
+            SPIN (Cost 1 Ticket)
+          </Button>
         }
       </div>
     </div>
