@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Layout, Button } from 'antd';
 
-function Navbar({ connetToWallet, walletAddress, loginWithMagic, logoutOfMagic, isLoggedIn }) {
+
+function Navbar({ connetToWallet, walletAddress, logoutOfMagic, isLoggedIn }) {
   return (
     <Layout.Header>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <h2 style={{ color: 'white'}}>Logo</h2>
+        <Link to="/" style={{ color: 'white'}}>Logo</Link>
         <div>
           {!walletAddress 
             ? <div>
@@ -16,7 +18,9 @@ function Navbar({ connetToWallet, walletAddress, loginWithMagic, logoutOfMagic, 
                 >
                   Connect to Wallet
                 </Button>
-                <Button onClick={loginWithMagic}>Login with Magic</Button>
+                <Button>
+                  <Link to="/login">Login with Magic</Link>
+                </Button>
               </div>
             : <Button
                 style={{ marginBottom: '7px'}}

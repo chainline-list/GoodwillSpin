@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { HashRouter, Switch, Route  } from 'react-router-dom';
 import { Layout } from 'antd';
 import Web3 from 'web3';
 import { Magic } from 'magic-sdk';
@@ -9,6 +10,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import SpinWheel from './pages/SpinWheel';
+import Login from './pages/Login';
 import TokenBlockchain from './abis/Token.json';
 import WheelBlockchain from './abis/Wheel.json';
 
@@ -102,53 +104,64 @@ function App() {
     setTokenBlockchain(tokenContract);
   }
 
-  const loginWithMagic = async () => {
-    await magic.auth.loginWithMagicLink({ email: "" });
+  const loginWithMagic = async (email) => {
+    await magic.auth.loginWithMagicLink({ email });
+    const { publicAddress } = await magic.user.getMetadata();
+    setWalletAddress(publicAddress);
+    setUserMetadata(await magic.user.getMetadata());
     await connetToBlockchainWithMagic();
     setIsLoggedIn(true);
   };
 
   const logoutOfMagic = async () => {
     await magic.user.logout();
-    setWalletAddress('');
     setWheelBlockchain(null);
     setTokenBlockchain(null);
+    setWalletAddress('');
     setIsLoggedIn(false);
   };
 
   console.log(walletAddress, userMetadata);
 
   return (
-    <Layout className="App">
-      <Navbar
-        connetToWallet={connetToWallet}
-        walletAddress={walletAddress}
-        loginWithMagic={loginWithMagic}
-        logoutOfMagic={logoutOfMagic}
-        isLoggedIn={isLoggedIn} />
-      <Layout>
-        <Layout.Sider width={180} className="site-layout-background"> 
-          <Sidebar />
-        </Layout.Sider>
-        <Layout style={{ padding: '0 24px 24px', minHeight: '92vh' }}>
-          <Layout.Content
-            className="site-layout-background"
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
-          >
-            <SpinWheel
-              walletAddress={walletAddress}
-              wheelBlockchain={wheelBlockchain}
-              tokenBlockchain={tokenBlockchain}
-              isLoggedIn={isLoggedIn}
-              magicHarmony={magicHarmony} />
-          </Layout.Content>
+    <HashRouter>
+      <Layout className="App">
+        <Navbar
+          connetToWallet={connetToWallet}
+          walletAddress={walletAddress}
+          logoutOfMagic={logoutOfMagic}
+          isLoggedIn={isLoggedIn} />
+        <Layout>
+          <Layout.Sider width={180} className="site-layout-background"> 
+            <Sidebar />
+          </Layout.Sider>
+          <Layout style={{ padding: '0 24px 24px', minHeight: '92vh' }}>
+            <Layout.Content
+              className="site-layout-background"
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+              }}
+            >
+              <Switch>
+                <Route path="/login">
+                  <Login loginWithMagic={loginWithMagic} />
+                </Route>
+                <Route path="/">
+                  <SpinWheel
+                    walletAddress={walletAddress}
+                    wheelBlockchain={wheelBlockchain}
+                    tokenBlockchain={tokenBlockchain}
+                    isLoggedIn={isLoggedIn}
+                    magicHarmony={magicHarmony} />
+                </Route>
+              </Switch>
+            </Layout.Content>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+    </HashRouter>
   );
 }
 
