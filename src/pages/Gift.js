@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Statistic, Avatar, List, InputNumber, Typography, Divider, Button  } from 'antd';
+import {
+  HeartOutlined,
+  SmileOutlined,
+  TrophyOutlined
+} from '@ant-design/icons';
+
+import GiftFormCard from '../components/GiftFormCard';
 
 import icon1 from '../assets/2page_gift box.png'
 import icon2 from '../assets/2page_wheel.png';
@@ -27,6 +34,7 @@ const data = [
 
 function Gift() {
   const [oneBalance, setOneBalance] = useState(0);
+  const [occasionNum, setOccasionNum] = useState(1);
   const [purchaseGiftTokensAmount, setPurchaseGiftTokensAmount] = useState(0);
 
   function setPurchaseGiftTokens(value) {
@@ -66,6 +74,42 @@ function Gift() {
         </Row>
       </Card>
       <Divider orientation="left">Gift Goodwill</Divider>
+      <Card>
+        <h2>What's the Occasion?</h2>
+        <Row gutter={16}>
+          <Col
+            className="gutter-col"
+            sm={{ span: 12 }}
+            md={{ span: 4 }}
+            style={ occasionNum !== 1 && { color: '#d0d2d6'} }
+            onClick={() => setOccasionNum(1)}
+          >
+            <HeartOutlined className="gift__icon" />
+            <p style={{ textAlign: 'center' }}>Just for you</p>
+          </Col>
+          <Col
+            className="gutter-col"
+            sm={{ span: 12 }}
+            md={{ span: 4 }}
+            style={ occasionNum !== 2 && { color: '#d0d2d6'} }
+            onClick={() => setOccasionNum(2)}
+          >
+            <SmileOutlined className="gift__icon" />
+            <p style={{ textAlign: 'center' }}>Thank you</p>
+          </Col>
+          <Col
+            className="gutter-col"
+            sm={{ span: 12 }}
+            md={{ span: 4 }}
+            style={ occasionNum !== 3 && { color: '#d0d2d6'} }
+            onClick={() => setOccasionNum(3)}
+          >
+            <TrophyOutlined className="gift__icon" />
+            <p style={{ textAlign: 'center' }}>Congratulations</p>
+          </Col>
+        </Row>
+        <GiftFormCard />
+      </Card>
     </div>
   )
 }

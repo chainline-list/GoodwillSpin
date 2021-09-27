@@ -118,6 +118,14 @@
   margin-bottom: 10px;
 }
 
+.gift__icon {
+  font-size: 40px;
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
 .btn-spin {
   margin-top: 30px !important;
   display: block;
