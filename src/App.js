@@ -11,6 +11,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import SpinWheel from './pages/SpinWheel';
 import Login from './pages/Login';
+import Gift from './pages/Gift';
 import TokenBlockchain from './abis/Token.json';
 import WheelBlockchain from './abis/Wheel.json';
 
@@ -147,6 +148,9 @@ function App() {
               <Switch>
                 <Route path="/login">
                   <Login loginWithMagic={loginWithMagic} />
+                </Route>
+                <Route path="/gift">
+                  <Gift />
                 </Route>
                 <Route path="/">
                   <SpinWheel

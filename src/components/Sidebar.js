@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Menu } from 'antd';
 
 function Sidebar() {
@@ -10,10 +11,14 @@ function Sidebar() {
       mode="inline"
     >
       <Menu.Item key="1">
-        Spin & Win
+        <Link to="/">
+          Spin & Win
+        </Link>
       </Menu.Item>
       <Menu.Item key="2">
-        Gift Goodwill
+        <Link to="/gift">
+          Gift Goodwill
+        </Link>
       </Menu.Item>
     </Menu>
   )
