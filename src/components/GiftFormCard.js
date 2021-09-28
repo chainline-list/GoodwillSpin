@@ -4,8 +4,21 @@ import { Row, Col, Form, Input, Button } from 'antd';
 function GiftFormCard() {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     console.log(values);
+    const res = await fetch('http://localhost:4000/api/gift/sendemail', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: values.recipient,
+        message: values.message,
+        from: values.from
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    console.log(res);
   };
 
   const onReset = () => {
