@@ -12,6 +12,7 @@ import Sidebar from './components/Sidebar';
 import SpinWheel from './pages/SpinWheel';
 import Login from './pages/Login';
 import Gift from './pages/Gift';
+import ClaimToken from './pages/ClaimToken';
 import TokenBlockchain from './abis/Token.json';
 import WheelBlockchain from './abis/Wheel.json';
 import GiftTokenBlockchain from './abis/GiftToken.json';
@@ -156,6 +157,11 @@ function App() {
                 </Route>
                 <Route path="/gift">
                   <Gift
+                    walletAddress={walletAddress}
+                    giftTokenBlockchain={giftTokenBlockchain} />
+                </Route>
+                <Route path="/claim/:redeedid">
+                  <ClaimToken
                     walletAddress={walletAddress}
                     giftTokenBlockchain={giftTokenBlockchain} />
                 </Route>
