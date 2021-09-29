@@ -6,6 +6,7 @@ function ClaimToken({ walletAddress, giftTokenBlockchain }) {
   const { redeedid } = useParams();
 
   const [giftTokenBalance, setGiftTokenBalance] = useState(0);
+  const [transactionHash, setTransactionHash] = useState('');
 
   useEffect(() => {
     const getGiftTokenBalance = async () => {
@@ -18,11 +19,29 @@ function ClaimToken({ walletAddress, giftTokenBlockchain }) {
     if(giftTokenBlockchain) getGiftTokenBalance();
   }, [giftTokenBlockchain, redeedid])
 
+  // const claimToken = async () => {
+  //   const data = await giftTokenBlockchain.methods
+  //     .redeemToken(redeedid)
+  //     .send({ from: walletAddress });
+  //   console.log(data);
+  // }
+
   const claimToken = async () => {
-    const data = await giftTokenBlockchain.methods
-      .redeemToken(redeedid)
-      .send({ from: walletAddress });
+    const res = await fetch('http://localhost:4000/api/gift/claim', {
+      method: 'POST',
+      body: JSON.stringify({
+        redeemId: redeedid,
+        toAddress: walletAddress
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const data = await res.json();
     console.log(data);
+    setTransactionHash(data.transactionHash);
+    setGiftTokenBalance(0);
   }
 
   return (
@@ -35,6 +54,7 @@ function ClaimToken({ walletAddress, giftTokenBlockchain }) {
             </div>
           : <p>Connect to your wallet or login with Magic</p>
         }
+        {transactionHash && <p>Success, {transactionHash}</p>}
       </Card>
     </div>
   )

@@ -12,6 +12,11 @@ contract GiftToken is ERC20 {
         uint redeemId
     );
 
+    event RedeemGiftTokenHistory (
+        address to,
+        uint redeemId
+    );
+
     constructor() public payable ERC20("Gift Token", "GT") {}
 
     function purchaseToken() public payable{
@@ -31,6 +36,16 @@ contract GiftToken is ERC20 {
     function redeemToken(uint redeemId) public {
         _mint(msg.sender, giftTokenAmountList[redeemId]);
          giftTokenAmountList[redeemId] = 0;
+
+         emit RedeemGiftTokenHistory(msg.sender, redeemId);
+    }
+
+    //  Redeem for Gift token by redeem Id to someone
+    function redeemTokenOnBehalf(uint redeemId, address to) public {
+        _mint(to, giftTokenAmountList[redeemId]);
+        giftTokenAmountList[redeemId] = 0;
+
+         emit RedeemGiftTokenHistory(msg.sender, redeemId);
     }
 
     // Return a random number 0 - 100
