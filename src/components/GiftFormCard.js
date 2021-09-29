@@ -1,17 +1,28 @@
 import React from 'react';
 import { Row, Col, Form, Input, Button } from 'antd';
-
-function GiftFormCard() {
+ 
+const msgList = [
+  "Just for you",
+  "Thank you",
+  "Congratulations"
+]
+function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     console.log(values);
+    const data = await giftTokenBlockchain.methods
+      .sendTokenToSomeone(window.web3.utils.toWei(values.amount.toString(), 'Ether'))
+      .send({ from: walletAddress });
+    console.log(data);
     const res = await fetch('http://localhost:4000/api/gift/sendemail', {
       method: 'POST',
       body: JSON.stringify({
         email: values.recipient,
         message: values.message,
-        from: values.from
+        from: values.from,
+        header: msgList[occasionNum - 1],
+        redeemId: data.events.GiftTokenSent.returnValues.redeemId
       }),
       headers: {
         'Content-Type': 'application/json'

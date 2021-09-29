@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import Gift from './pages/Gift';
 import TokenBlockchain from './abis/Token.json';
 import WheelBlockchain from './abis/Wheel.json';
+import GiftTokenBlockchain from './abis/GiftToken.json';
 
 const { Harmony: Index } = require('@harmony-js/core');
 const { ChainID, ChainType } = require('@harmony-js/utils');
@@ -42,6 +43,7 @@ function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [wheelBlockchain, setWheelBlockchain] = useState(null);
   const [tokenBlockchain, setTokenBlockchain] = useState(null);
+  const [giftTokenBlockchain, setGiftTokenBlockchain] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userMetadata, setUserMetadata] = useState({});
   const [magicHarmony] = useState(magic);
@@ -92,6 +94,9 @@ function App() {
 
         const tokenContract = new web3.eth.Contract(TokenBlockchain.abi, TokenBlockchain.networks[networkId].address);
         setTokenBlockchain(tokenContract);
+
+        const giftTokenContract = new web3.eth.Contract(GiftTokenBlockchain.abi, GiftTokenBlockchain.networks[networkId].address);
+        setGiftTokenBlockchain(giftTokenContract);
     } else {
         window.alert('Contract is not deployed to detected network')
     }
@@ -150,7 +155,9 @@ function App() {
                   <Login loginWithMagic={loginWithMagic} />
                 </Route>
                 <Route path="/gift">
-                  <Gift />
+                  <Gift
+                    walletAddress={walletAddress}
+                    giftTokenBlockchain={giftTokenBlockchain} />
                 </Route>
                 <Route path="/">
                   <SpinWheel

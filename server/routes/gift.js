@@ -10,6 +10,8 @@ router.post('/sendemail', async (req, res, next) => {
   const email = req.body.email;
   const message = req.body.message;
   const from = req.body.from;
+  const header = req.body.header;
+  const redeemId = req.body.redeemId;
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -22,9 +24,10 @@ router.post('/sendemail', async (req, res, next) => {
   const mailOptions = {
     from: process.env.YOUREMAIL,
     to: email,
-    subject: 'Sending Email using Node.js',
+    subject: header,
     html: `
-      <h1>From, ${from}</h1>
+      <h1>From,${from}</h1>
+      <p>Id: ${redeemId}</p>
       <p>${message}</p>
     `
   };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Avatar, List, InputNumber, Typography, Divider, Button  } from 'antd';
 import {
   HeartOutlined,
@@ -32,13 +32,49 @@ const data = [
   },
 ];
 
-function Gift() {
+function Gift({ walletAddress, giftTokenBlockchain }) {
   const [oneBalance, setOneBalance] = useState(0);
+  const [giftTokenBalance, setGiftTokenBalance] = useState(0);
   const [occasionNum, setOccasionNum] = useState(1);
   const [purchaseGiftTokensAmount, setPurchaseGiftTokensAmount] = useState(0);
 
+  useEffect(() => {
+    const getGiftTokenBalance = async () => {
+      const amount = await giftTokenBlockchain.methods
+        .balanceOf(walletAddress)
+        .call();
+        setGiftTokenBalance(amount);
+
+      if(window.web3.eth){
+        const balance = await window.web3.eth.getBalance(walletAddress);
+        setOneBalance(balance);
+      }
+    }
+
+    if(giftTokenBlockchain) getGiftTokenBalance();
+  }, [giftTokenBlockchain])
+
   function setPurchaseGiftTokens(value) {
     setPurchaseGiftTokensAmount(value);
+  }
+
+  const buyToken = async () => {
+    const data = await giftTokenBlockchain.methods
+      .purchaseToken()
+      .send({ from: walletAddress, value: window.web3.utils.toWei(purchaseGiftTokensAmount.toString(), 'Ether')});
+    console.log(data);
+
+    const amount = await giftTokenBlockchain.methods
+      .balanceOf(walletAddress)
+      .call();
+      setGiftTokenBalance(amount);
+
+    if(window.web3.eth){
+      const balance = await window.web3.eth.getBalance(walletAddress);
+      setOneBalance(balance);
+    }
+
+    setPurchaseGiftTokensAmount(0);
   }
 
   return (
@@ -47,15 +83,15 @@ function Gift() {
         <Row gutter={16}>
           <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 12 }}>
             <Statistic title="Your Available ONE tokens" value={`${oneBalance / 10 ** 18} One`} />
-            <Statistic title="Your Gift tokens" value="0" />
-
+            <Statistic title="Your Gift tokens" value={`${giftTokenBalance / 10 ** 18} Gift Token`} />
+            <br />
             <Typography.Title level={2} style={{ marginBottom: '5px' }}>
               Purchase Gift Tokens
             </Typography.Title >
             <InputNumber value={purchaseGiftTokensAmount} onChange={setPurchaseGiftTokens} />
             <br />
             <br />
-            <Button type="primary">Purchase</Button>
+            <Button type="primary" onClick={buyToken}>Purchase</Button>
           </Col>
           <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 12 }}>
           <List
@@ -108,7 +144,11 @@ function Gift() {
             <p style={{ textAlign: 'center' }}>Congratulations</p>
           </Col>
         </Row>
-        <GiftFormCard />
+
+        <GiftFormCard
+          occasionNum={occasionNum}
+          walletAddress={walletAddress}
+          giftTokenBlockchain={giftTokenBlockchain} />
       </Card>
     </div>
   )
