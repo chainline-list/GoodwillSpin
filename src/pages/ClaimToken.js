@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Spin, Card, Button } from 'antd';
 
+import { SERVERLINK } from '../config';
+
 function ClaimToken({ walletAddress, giftTokenBlockchain }) {
   const { redeedid } = useParams();
 
@@ -30,7 +32,7 @@ function ClaimToken({ walletAddress, giftTokenBlockchain }) {
   const claimToken = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:4000/api/gift/claim', {
+      const res = await fetch(SERVERLINK + '/api/gift/claim', {
         method: 'POST',
         body: JSON.stringify({
           redeemId: redeedid,

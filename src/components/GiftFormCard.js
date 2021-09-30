@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Spin, Row, Col, Form, Input, Button } from 'antd';
+
+import { SERVERLINK } from '../config';
  
 const msgList = [
   "Just for you",
@@ -19,12 +21,14 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
         .sendTokenToSomeone(window.web3.utils.toWei(values.amount.toString(), 'Ether'))
         .send({ from: walletAddress });
       console.log(data);
-      const res = await fetch('http://localhost:4000/api/gift/sendemail', {
+      const res = await fetch(SERVERLINK + '/api/gift/sendemail', {
         method: 'POST',
         body: JSON.stringify({
           email: values.recipient,
+          recipientName: values.recipientName,
           message: values.message,
-          from: values.from,
+          name: values.name,
+          fromEmail: values.fromEmail,
           header: msgList[occasionNum - 1],
           redeemId: data.events.GiftTokenSent.returnValues.redeemId
         }),
@@ -62,6 +66,18 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
             </Form.Item>
 
             <Form.Item
+              name="recipientName"
+              label="Recipient Name"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
               name="amount"
               label="Gift Amount"
               rules={[
@@ -74,8 +90,20 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
             </Form.Item>
 
             <Form.Item
-              name="from"
-              label="From"
+              name="name"
+              label="Your Name"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="fromEmail"
+              label="Your Email"
               rules={[
                 {
                   required: true,
@@ -96,7 +124,7 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
                 },
               ]}
             >
-              <Input.TextArea rows={9} />
+              <Input.TextArea rows={17} />
             </Form.Item>
           </Col>
         </Row>

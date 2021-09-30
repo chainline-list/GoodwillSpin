@@ -125,19 +125,20 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
     const donation = await wheelBlockchain.methods
       .totalDonation()
       .call();
-    setDonationTotal(donation);
+    setDonationTotal(await getONEtoUSD(donation));
     const prize = await wheelBlockchain.methods
       .prizePool()
       .call();
-    setPoolPrize(prize);
-    const amount = await tokenBlockchain.methods
-      .balanceOf(walletAddress)
+    setPoolPrize(await getONEtoUSD(prize));
+    const award = await wheelBlockchain.methods
+      .prizePoolWon()
       .call();
-    setTokenBalance(amount);
+    setAwardedWon(await getONEtoUSD(award));
 
     if(window.web3.eth){
       const balance = await window.web3.eth.getBalance(walletAddress);
       setOneBalance(balance);
+      setOneToUSDBalance(await getONEtoUSD(balance));
     }
   }
 

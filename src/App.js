@@ -109,6 +109,9 @@ function App() {
 
     const tokenContract = harmony.contracts.createContract(TokenBlockchain.abi, TokenBlockchain.networks['1666700000'].address);
     setTokenBlockchain(tokenContract);
+
+    const giftTokenContract = harmony.contracts.createContract(GiftTokenBlockchain.abi, GiftTokenBlockchain.networks['1666700000'].address);
+    setGiftTokenBlockchain(giftTokenContract);
   }
 
   const loginWithMagic = async (email) => {

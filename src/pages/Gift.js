@@ -20,11 +20,11 @@ const data = [
   },
   {
     image: icon2,
-    description: 'You get a spin ticket for every $1 of gift tokens.  ',
+    description: 'You get a spin ticket for every Ten (Harmony ONE) Tokens of gift tokens.  ',
   },
   {
     image: icon3,
-    description: 'Each gift token is $1.  Recipients of charity gift tokens can donate the tokens to their preferred charities',
+    description: 'Each gift token is Ten (Harmony ONE) Tokens.  Recipients of charity gift tokens can donate the tokens to their preferred charities',
   },
   {
     image: icon4,
