@@ -42,7 +42,7 @@ contract Wheel {
     function buyTicketTokens() payable public  {
         prizePool += msg.value;
         totalDonation += msg.value;
-        token.mint(msg.sender, msg.value);
+        token.mint(msg.sender, msg.value / 10);
 
         emit TokenSale(msg.sender, msg.value);
     }

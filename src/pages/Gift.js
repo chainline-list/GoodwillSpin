@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Avatar, List, InputNumber, Typography, Divider, Button  } from 'antd';
+import { Spin, Card, Row, Col, Statistic, Avatar, List, InputNumber, Typography, Divider, Button  } from 'antd';
 import {
   HeartOutlined,
   SmileOutlined,
@@ -37,6 +37,7 @@ function Gift({ walletAddress, giftTokenBlockchain }) {
   const [giftTokenBalance, setGiftTokenBalance] = useState(0);
   const [occasionNum, setOccasionNum] = useState(1);
   const [purchaseGiftTokensAmount, setPurchaseGiftTokensAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getGiftTokenBalance = async () => {
@@ -59,26 +60,33 @@ function Gift({ walletAddress, giftTokenBlockchain }) {
   }
 
   const buyToken = async () => {
-    const data = await giftTokenBlockchain.methods
-      .purchaseToken()
-      .send({ from: walletAddress, value: window.web3.utils.toWei(purchaseGiftTokensAmount.toString(), 'Ether')});
-    console.log(data);
+    try {
+      setLoading(true);
 
-    const amount = await giftTokenBlockchain.methods
-      .balanceOf(walletAddress)
-      .call();
-      setGiftTokenBalance(amount);
+      const data = await giftTokenBlockchain.methods
+        .purchaseToken()
+        .send({ from: walletAddress, value: window.web3.utils.toWei(purchaseGiftTokensAmount.toString(), 'Ether')});
+      console.log(data);
 
-    if(window.web3.eth){
-      const balance = await window.web3.eth.getBalance(walletAddress);
-      setOneBalance(balance);
+      const amount = await giftTokenBlockchain.methods
+        .balanceOf(walletAddress)
+        .call();
+        setGiftTokenBalance(amount);
+
+      if(window.web3.eth){
+        const balance = await window.web3.eth.getBalance(walletAddress);
+        setOneBalance(balance);
+      }
+
+      setPurchaseGiftTokensAmount(0);
+      setLoading(false);
+    } catch(error) {
+      setLoading(false);
     }
-
-    setPurchaseGiftTokensAmount(0);
   }
 
   return (
-    <div>
+    <Spin spinning={loading}>
       <Card>
         <Row gutter={16}>
           <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 12 }}>
@@ -150,7 +158,7 @@ function Gift({ walletAddress, giftTokenBlockchain }) {
           walletAddress={walletAddress}
           giftTokenBlockchain={giftTokenBlockchain} />
       </Card>
-    </div>
+    </Spin>
   )
 }
 

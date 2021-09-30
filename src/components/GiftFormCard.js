@@ -1,5 +1,5 @@
-import React from 'react';
-import { Row, Col, Form, Input, Button } from 'antd';
+import React, { useState } from 'react';
+import { Spin, Row, Col, Form, Input, Button } from 'antd';
  
 const msgList = [
   "Just for you",
@@ -9,27 +9,35 @@ const msgList = [
 function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
   const [form] = Form.useForm();
 
-  const onFinish = async (values) => {
-    console.log(values);
-    const data = await giftTokenBlockchain.methods
-      .sendTokenToSomeone(window.web3.utils.toWei(values.amount.toString(), 'Ether'))
-      .send({ from: walletAddress });
-    console.log(data);
-    const res = await fetch('http://localhost:4000/api/gift/sendemail', {
-      method: 'POST',
-      body: JSON.stringify({
-        email: values.recipient,
-        message: values.message,
-        from: values.from,
-        header: msgList[occasionNum - 1],
-        redeemId: data.events.GiftTokenSent.returnValues.redeemId
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+  const [loading, setLoading] = useState(false);
 
-    console.log(res);
+  const onFinish = async (values) => {
+    try {
+      setLoading(true);
+      console.log(values);
+      const data = await giftTokenBlockchain.methods
+        .sendTokenToSomeone(window.web3.utils.toWei(values.amount.toString(), 'Ether'))
+        .send({ from: walletAddress });
+      console.log(data);
+      const res = await fetch('http://localhost:4000/api/gift/sendemail', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: values.recipient,
+          message: values.message,
+          from: values.from,
+          header: msgList[occasionNum - 1],
+          redeemId: data.events.GiftTokenSent.returnValues.redeemId
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      console.log(res);
+      setLoading(false);
+    } catch(error){
+      setLoading(false);
+    }
   };
 
   const onReset = () => {
@@ -37,7 +45,7 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
   };
 
   return (
-    <div>
+    <Spin spinning={loading}>
       <Form form={form} name="control-hooks" onFinish={onFinish} layout="vertical">
         <Row gutter={16}>
           <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 12 }}>
@@ -101,7 +109,7 @@ function GiftFormCard({ occasionNum, walletAddress, giftTokenBlockchain }) {
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </Spin>
   )
 }
 

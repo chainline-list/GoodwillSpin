@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Row, Col, Typography, Statistic } from 'antd';
-import { Form, Input, Button, Select } from 'antd';
+import { Spin, Form, Input, Button, Select } from 'antd';
 
 const layout = {
   labelCol: {
@@ -22,10 +22,13 @@ function DonationFormCard({ buyToken, oneBalance, oneToUSDBalance, wheelBlockcha
   const [form] = Form.useForm();
 
   const [usd, setUSD] = useState("0");
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    setLoading(true);
     console.log(values);
-    buyToken(values.donationAmount);
+    await buyToken(values.donationAmount);
+    setLoading(false);
   };
 
   const onReset = () => {
@@ -45,59 +48,61 @@ function DonationFormCard({ buyToken, oneBalance, oneToUSDBalance, wheelBlockcha
   }
 
   return (
-    <Card>
-      <Typography.Title style={{ marginTop: '0', marginBottom: '.5rem'}}>
-        Donate to Win
-      </Typography.Title>
-      
-      <Row gutter={16}>
-        <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
-          <p style={{ marginBottom: '1rem'}}>For every One Token donated to charities, you receive one ticket to spin the wheel of goodwill.</p>
-          <Statistic title="Your Available ONE tokens" value={`${oneBalance / 10 ** 18} One ($${oneToUSDBalance})`} />
-        </Col>
-        <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 16 }}>
-          <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
-            <Form.Item
-              name="charityList"
-              label="Charity List"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Select
-                placeholder="Select Chartiy (Drop down list)"
-                allowClear
+    <Spin spinning={loading}>
+      <Card>
+        <Typography.Title style={{ marginTop: '0', marginBottom: '.5rem'}}>
+          Donate to Win
+        </Typography.Title>
+        
+        <Row gutter={16}>
+          <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
+            <p style={{ marginBottom: '1rem'}}>For every Ten (Harmony ONE) Tokens donated to charities, you receive one ticket to spin the wheel of goodwill.</p>
+            <Statistic title="Your Available ONE tokens" value={`${oneBalance / 10 ** 18} One ($${oneToUSDBalance})`} />
+          </Col>
+          <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 16 }}>
+            <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
+              <Form.Item
+                name="charityList"
+                label="Charity List"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
               >
-                <Select.Option value="0x83eb0e2e36da037d4a2f9145a2544252421d52d0">Red Cross</Select.Option>
-                <Select.Option value="0x41026a0c3880e0c6d19b0cdbb421f587f3029f40">Pet Shelter</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="donationAmount"
-              label="Donation Amount"
-              rules={[
-                {
-                  required: true,
-                },
-              ]}
-            >
-              <Input onChange={getValue} addonAfter={`$${usd}`} placeholder="One" />
-            </Form.Item>
+                <Select
+                  placeholder="Select Chartiy (Drop down list)"
+                  allowClear
+                >
+                  <Select.Option value="0x83eb0e2e36da037d4a2f9145a2544252421d52d0">Red Cross</Select.Option>
+                  <Select.Option value="0x41026a0c3880e0c6d19b0cdbb421f587f3029f40">Pet Shelter</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="donationAmount"
+                label="Donation Amount"
+                rules={[
+                  {
+                    required: true,
+                  },
+                ]}
+              >
+                <Input onChange={getValue} addonAfter={`$${usd}`} placeholder="One" />
+              </Form.Item>
 
-            <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit">
-                Donate
-              </Button>
-              <Button htmlType="button" onClick={onReset}>
-                Reset
-              </Button>
-            </Form.Item>
-          </Form>
-        </Col>
-      </Row>
-    </Card>
+              <Form.Item {...tailLayout}>
+                <Button type="primary" htmlType="submit">
+                  Donate
+                </Button>
+                <Button htmlType="button" onClick={onReset}>
+                  Reset
+                </Button>
+              </Form.Item>
+            </Form>
+          </Col>
+        </Row>
+      </Card>
+    </Spin>
   )
 }
 

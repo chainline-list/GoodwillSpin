@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Typography, Divider, List } from 'antd';
+import { Row, Col, Typography, Divider, List, Card } from 'antd';
 
 import PrizePoolCard from '../components/PrizePoolCard';
 import DonationFormCard from '../components/DonationFormCard';
@@ -77,15 +77,16 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
       const donation = await wheelBlockchain.methods
         .totalDonation()
         .call();
-        setDonationTotal(donation);
+      setDonationTotal(await getONEtoUSD(donation));
       const prize = await wheelBlockchain.methods
         .prizePool()
         .call();
-      setPoolPrize(prize);
+      setPoolPrize(await getONEtoUSD(prize));
       const award = await wheelBlockchain.methods
         .prizePoolWon()
         .call();
-        setAwardedWon(award);
+      setAwardedWon(await getONEtoUSD(award));
+
       const amount = await tokenBlockchain.methods
         .balanceOf(walletAddress)
         .call();
@@ -94,6 +95,7 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
       if(window.web3.eth){
         const balance = await window.web3.eth.getBalance(walletAddress);
         setOneBalance(balance);
+        setOneToUSDBalance(await getONEtoUSD(balance));
       }
     }, (1000 + (125 * +wheelNumber)))
   }
@@ -171,10 +173,17 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
 
   return (
     <div>
-      <PrizePoolCard
+      {wheelBlockchain 
+        ? <PrizePoolCard
         donationTotal={donationTotal}
         poolPrize={poolPrize}
         awardedWon={awardedWon} />
+        : <Card>
+            <Typography.Title style={{ marginBottom: '0', textAlign: 'center', color: 'red'}}>
+              Connect to your wallet to see the prize pool
+            </Typography.Title>
+          </Card>
+      }
       <DonationFormCard
         buyToken={buyToken}
         oneBalance={oneBalance}

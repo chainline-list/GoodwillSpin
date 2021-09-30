@@ -2,12 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Layout, Button } from 'antd';
 
+import Logo from '../assets/goodwillspinlogo.png';
 
 function Navbar({ connetToWallet, walletAddress, logoutOfMagic, isLoggedIn }) {
   return (
     <Layout.Header>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-        <Link to="/" style={{ color: 'white'}}>Logo</Link>
+        <Link to="/" style={{ color: 'white'}}>
+          <img src={Logo} alt="Logo" />
+        </Link>
         <div>
           {!walletAddress 
             ? <div>
