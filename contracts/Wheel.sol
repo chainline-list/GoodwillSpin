@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.12;
 
+import "@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
 import "./Token.sol";
 
 contract Wheel {
     Token private token;
+    AggregatorV3Interface internal priceFeed;
+
     uint public totalDonation = 0;
     uint public prizePool = 0;
     uint public prizePoolWon = 0;
@@ -23,9 +26,16 @@ contract Wheel {
         uint wheelNumber
     );
 
+    /**
+    * Network: Harmony Testnet
+    * Aggregator: ONE / USD
+    * Address: 0xcEe686F89bc0dABAd95AEAAC980aE1d97A075FAD
+    */
     constructor(Token _token) public {
         _owner = msg.sender;
         token = _token;
+
+        priceFeed = AggregatorV3Interface(0xcEe686F89bc0dABAd95AEAAC980aE1d97A075FAD);
     }
 
     // Send ticket token
@@ -114,6 +124,18 @@ contract Wheel {
     // Return a random number 0 - 100
     function getRandomValue(uint mod) internal view returns(uint) {
         return uint(keccak256(abi.encodePacked(now, block.difficulty, msg.sender))) % mod;
+    }
+
+    // Returns the latest price
+    function getThePrice() public view returns (int) {
+        (
+            uint80 roundID, 
+            int price,
+            uint startedAt,
+            uint timeStamp,
+            uint80 answeredInRound
+        ) = priceFeed.latestRoundData();
+        return price;
     }
 
     // NOTE: For testing only, withdraw all the funds from the contract

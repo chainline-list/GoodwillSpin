@@ -10,6 +10,7 @@ import ResultModal from '../components/ResultModal';
 function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn, magicHarmony }) {
   const [wheelclass, setWheelclass] = useState("box");
   const [oneBalance, setOneBalance] = useState(0);
+  const [oneToUSDBalance, setOneToUSDBalance] = useState(0);
   const [tokenBalance, setTokenBalance] = useState(0);
   const [donationTotal, setDonationTotal] = useState(0);
   const [poolPrize, setPoolPrize] = useState(0);
@@ -19,24 +20,37 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [result, setResult] = useState('');
 
+  const getONEtoUSD = async ONEvalue => {
+    const usdValue = await wheelBlockchain.methods
+        .getThePrice()
+        .call();
+
+        console.log(usdValue)
+
+    let totalUSDValue = (usdValue * ONEvalue) / 10 ** 26;
+    totalUSDValue = Number.parseFloat(totalUSDValue).toFixed(2);
+    return totalUSDValue;
+  }
+
   useEffect(() => {
     const getPoolPrizeInfo = async () => {
       const donation = await wheelBlockchain.methods
         .totalDonation()
         .call();
-        setDonationTotal(donation);
+      setDonationTotal(await getONEtoUSD(donation));
       const prize = await wheelBlockchain.methods
         .prizePool()
         .call();
-      setPoolPrize(prize);
+      setPoolPrize(await getONEtoUSD(prize));
       const award = await wheelBlockchain.methods
         .prizePoolWon()
         .call();
-        setAwardedWon(award);
+      setAwardedWon(await getONEtoUSD(award));
       
       if(window.web3.eth){
         const balance = await window.web3.eth.getBalance(walletAddress);
         setOneBalance(balance);
+        setOneToUSDBalance(await getONEtoUSD(balance));
       }
     }
 
@@ -153,7 +167,6 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
       setResult(data.events.WonWheel.returnValues.result);
       startRotation(data.events.WonWheel.returnValues.wheelNumber);
     }
-    
   }
 
   return (
@@ -164,7 +177,9 @@ function SpinWheel({ walletAddress, wheelBlockchain, tokenBlockchain, isLoggedIn
         awardedWon={awardedWon} />
       <DonationFormCard
         buyToken={buyToken}
-        oneBalance={oneBalance} />
+        oneBalance={oneBalance}
+        oneToUSDBalance={oneToUSDBalance}
+        wheelBlockchain={wheelBlockchain} />
 
       <Typography.Title style={{ marginTop: '1rem', textAlign: 'center'}}>
         Wheel of Goodwill

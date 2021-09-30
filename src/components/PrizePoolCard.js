@@ -6,13 +6,13 @@ function PrizePoolCard({ donationTotal, poolPrize, awardedWon }) {
     <Card>
       <Row gutter={16}>
         <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
-          <Statistic title="Total Donations" value={`${donationTotal / 10 ** 18} One`} />
+          <Statistic title="Total Donations" value={`$${donationTotal}`} />
         </Col>
         <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
-          <Statistic title="Total Pool Prize" value={`${poolPrize / 10 ** 18} One`} />
+          <Statistic title="Total Pool Prize" value={`$${poolPrize}`} />
         </Col>
         <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
-          <Statistic title="Total Winnings Awarded" value={`${awardedWon / 10 ** 18} One`} />
+          <Statistic title="Total Winnings Awarded" value={`$${awardedWon}`} />
         </Col>
     </Row>
     </Card>

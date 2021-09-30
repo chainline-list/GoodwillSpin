@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Row, Col, Typography, Statistic } from 'antd';
 import { Form, Input, Button, Select } from 'antd';
 
@@ -18,8 +18,10 @@ const tailLayout = {
   },
 };
 
-function DonationFormCard({ buyToken, oneBalance }) {
+function DonationFormCard({ buyToken, oneBalance, oneToUSDBalance, wheelBlockchain }) {
   const [form] = Form.useForm();
+
+  const [usd, setUSD] = useState("0");
 
   const onFinish = (values) => {
     console.log(values);
@@ -30,6 +32,18 @@ function DonationFormCard({ buyToken, oneBalance }) {
     form.resetFields();
   };
 
+  const getValue = async (e) => {
+    const usdValue = await wheelBlockchain.methods
+        .getThePrice()
+        .call();
+
+        console.log(usdValue)
+
+    let totalUSDValue = (usdValue * e.target.value) / 10 ** 8;
+    totalUSDValue = Number.parseFloat(totalUSDValue).toFixed(2);
+    setUSD(totalUSDValue);
+  }
+
   return (
     <Card>
       <Typography.Title style={{ marginTop: '0', marginBottom: '.5rem'}}>
@@ -39,7 +53,7 @@ function DonationFormCard({ buyToken, oneBalance }) {
       <Row gutter={16}>
         <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 8 }}>
           <p style={{ marginBottom: '1rem'}}>For every One Token donated to charities, you receive one ticket to spin the wheel of goodwill.</p>
-          <Statistic title="Your Available ONE tokens" value={`${oneBalance / 10 ** 18} One`} />
+          <Statistic title="Your Available ONE tokens" value={`${oneBalance / 10 ** 18} One ($${oneToUSDBalance})`} />
         </Col>
         <Col className="gutter-col" sm={{ span: 24 }} md={{ span: 16 }}>
           <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
@@ -69,9 +83,9 @@ function DonationFormCard({ buyToken, oneBalance }) {
                 },
               ]}
             >
-              <Input />
+              <Input onChange={getValue} addonAfter={`$${usd}`} placeholder="One" />
             </Form.Item>
-            
+
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit">
                 Donate
