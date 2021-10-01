@@ -2,7 +2,7 @@
 Gamifying donation process
 
 - Live Site:  https://goodwillspin.netlify.app/    (Harmony Testnet)
-- YouTube: https://youtu.be/JrqaB9KaDnA
+- YouTube: https://www.youtube.com/watch?v=ni9floNR4Fo
 
 ## Techologies
 - React
